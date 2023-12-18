@@ -8,7 +8,6 @@
     <string name="button_load">Cargar</string>
     <string name="button_save">Guardar</string>
     <string name="id_hint">Ingrese el número del id</string>
-    <string name="name_hint">Lugar Servicio</string>
     <string name="names_hint">Nombre Cliente</string>
     <string name="cost_hint">Costo Del Servicio</string>
     <string name="brand_hint">Servicio</string>

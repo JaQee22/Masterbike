@@ -4,12 +4,11 @@
     <string name="id_value">Id</string>
     <string name="name_value">lugar</string>
     <string name="names_value">Cliente</string>
-    <string name="cost_value">Cost</string>
+    <string name="cost_value">Costo</string>
     <string name="brand_value">Tipo Servicio</string>
-    <string name="button_load">Load</string>
-    <string name="button_save">Save</string>
+    <string name="button_load">Cargar</string>
+    <string name="button_save">Guardar</string>
     <string name="id_hint">Write the id number</string>
-    <string name="name_hint">Lugar Servicio</string>
     <string name="names_hint">Nombre Cliente</string>
     <string name="cost_hint">Costo Servicio</string>
     <string name="brand_hint">Servicio</string>

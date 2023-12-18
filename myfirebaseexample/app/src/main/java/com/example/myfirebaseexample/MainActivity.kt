@@ -10,6 +10,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import com.example.myfirebaseexample.api.FirebaseApiAdapter
 import com.example.myfirebaseexample.api.response.BiciResponse
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,6 @@ class MainActivity : AppCompatActivity() {
     // Referenciar campos de las interfaz
     private lateinit var idSpinner: Spinner
     private lateinit var serviceTypeSpinner: Spinner
-    private lateinit var nameField: EditText
     private lateinit var namesField: EditText
     private lateinit var costField: EditText
     private lateinit var brandField: EditText
@@ -73,12 +73,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private suspend fun populateIdSpinner() {
         val response = GlobalScope.async(Dispatchers.IO) {
             firebaseApi.getBicis()
         }
-        val ropas = response.await()
-        ropas?.forEach { entry ->
+        val bicis = response.await()
+        bicis?.forEach { entry ->
             biciList.add("${entry.key}: ${entry.value.name}")
         }
         val biciAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, biciList)
@@ -89,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private suspend fun getBiciFromApi() {
         val selectedItem = idSpinner.selectedItem.toString()
         val biciId = selectedItem.subSequence(0, selectedItem.indexOf(":")).toString()
@@ -97,28 +99,27 @@ class MainActivity : AppCompatActivity() {
             firebaseApi.getBici(biciId)
         }
         val bici = biciResponse.await()
-        nameField.setText(bici?.name)
         brandField.setText(bici?.brand)
         namesField.setText("${bici?.names}")
         costField.setText("${bici?.cost}")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private suspend fun sendBiciToApi() {
-        val biciName = nameField.text.toString()
         val brandName = brandField.text.toString()
         val names = namesField.text.toString()
         val cost = costField.text.toString().toLong()
-        val bici = BiciResponse("", biciName, names, cost, brandName)
+        val bici = BiciResponse("", brandName, names, cost, "")
         val BiciResponse = GlobalScope.async(Dispatchers.IO) {
             firebaseApi.setBici(bici)
         }
-        val response = BiciResponse.await()
-        nameField.setText(bici?.name)
-        brandField.setText(bici?.brand)
-        namesField.setText("${bici?.names}")
-        costField.setText("${bici?.cost}")
+        BiciResponse.await()
+        brandField.setText(bici.brand)
+        namesField.setText(bici.names)
+        costField.setText("${bici.cost}")
 
         biciList= arrayListOf<String>()
         populateIdSpinner()
     }
+
 }
