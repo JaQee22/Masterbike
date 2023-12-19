@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         }
         val bicis = response.await()
         bicis?.forEach { entry ->
-            biciList.add("${entry.key}: ${entry.value.name}")
+            biciList.add("${entry.key}: ${entry.value.brand}")
         }
         val biciAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, biciList)
         with(idSpinner) {
@@ -99,6 +99,9 @@ class MainActivity : AppCompatActivity() {
             firebaseApi.getBici(biciId)
         }
         val bici = biciResponse.await()
+        println(bici?.type)
+        println(servicesList.indexOf(bici?.type))
+        serviceTypeSpinner.setSelection(servicesList.indexOf(bici?.type))
         brandField.setText(bici?.brand)
         namesField.setText("${bici?.names}")
         costField.setText("${bici?.cost}")
@@ -106,19 +109,17 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private suspend fun sendBiciToApi() {
-        val brandName = brandField.text.toString()
+        val type = serviceTypeSpinner.selectedItem.toString()
+        val brand = brandField.text.toString()
         val names = namesField.text.toString()
         val cost = costField.text.toString().toLong()
-        val bici = BiciResponse("", brandName, names, cost, "")
+        val bici = BiciResponse(type, brand, names, cost)
         val BiciResponse = GlobalScope.async(Dispatchers.IO) {
             firebaseApi.setBici(bici)
         }
         BiciResponse.await()
-        brandField.setText(bici.brand)
-        namesField.setText(bici.names)
-        costField.setText("${bici.cost}")
 
-        biciList= arrayListOf<String>()
+        biciList = arrayListOf<String>()
         populateIdSpinner()
     }
 

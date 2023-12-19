@@ -21,7 +21,6 @@ class FirebaseApiAdapter {
     fun getBici(id: String): BiciResponse? {
         val call = firebaseApi.create(FirebaseApi::class.java).getBici(id).execute()
         val bici = call.body()
-        id.also { bici?.id = it }
         return bici
     }
 
